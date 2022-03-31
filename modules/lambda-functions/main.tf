@@ -21,7 +21,7 @@ resource "aws_lambda_function" "create" {
   description             = "Create"
   filename                = data.archive_file.lambda_create.output_path
   function_name           = "${var.project}-create"
-  role                    = data.aws_iam_role.put_sqs.arn
+  role                    = data.aws_iam_role.rd_sqs.arn
   handler                 = "create.lambda_handler"
   runtime                 = "python3.8"
   source_code_hash        = data.archive_file.lambda_create.output_base64sha256
@@ -30,7 +30,7 @@ resource "aws_lambda_function" "create" {
 }
 
 resource "aws_lambda_event_source_mapping" "create_event_source_mapping" {
-  event_source_arn = "${data.aws_sqs_queue.submit_post.arn}"
+  event_source_arn = "${data.aws_sqs_queue.submit.arn}"
   enabled          = true
   function_name    = "${aws_lambda_function.create.arn}"
   batch_size       = 1

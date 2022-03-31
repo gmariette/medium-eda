@@ -1,43 +1,6 @@
 variable "env" {}
 variable "project" {}
 variable "region" {}
-variable "domain_name" {}
-
-# VPC and Subnets
-data "aws_availability_zones" "available" {
-    state = "available"
-
-    filter {
-        name   = "region-name"
-        values = ["${var.region}"]
-  }
-    filter {
-        name = "state"
-        values = ["available"]
-    }
-}
-
-data "aws_vpc" "selected" {
-    state = "available"
-    filter {
-        name   = "tag:Name"
-        values = ["${var.project}-${var.env}-vpc"]
-  }
-}
-
-data "aws_subnet_ids" "intra_subnets_id" {
-  vpc_id = "${data.aws_vpc.selected.id}"
-  tags = {
-    Name = "${var.project}-${var.env}-vpc-intra-*"
-  }
-}
-
-data "aws_subnet_ids" "private_subnets_id" {
-  vpc_id = "${data.aws_vpc.selected.id}"
-  tags = {
-    Name = "${var.project}-${var.env}-vpc-private-*"
-  }
-}
 
 #IAM
 data "aws_iam_role" "basic_lambda" {
@@ -50,6 +13,11 @@ data "aws_iam_role" "put_sqs" {
 
 data "aws_iam_role" "rd_sqs" {
   name = "${var.project}-${var.env}-rd-sqs-lambda-iam-role"
+}
+
+# SQS Datasource
+data "aws_sqs_queue" "submit" {
+  name = "${var.project}-${var.env}-submit"
 }
 
 # Lambda zip

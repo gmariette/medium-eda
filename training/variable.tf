@@ -25,24 +25,11 @@ variable "region" {
 variable "aws_account" {
     description = "AWS account id"
     type = string
-    default = 1234568799
-}
-
-data "aws_availability_zones" "available" {
-    state = "available"
-
-    filter {
-        name   = "region-name"
-        values = [var.region]
-  }
-    filter {
-        name = "state"
-        values = ["available"]
-    }
+    default = 123456789
 }
 
 variable "allowed_account_ids" {
     description = "AWS account ids"
     type = list(string)
-    default = [ "1234568799" ]
+    default = [ "123456789" ]
 }
